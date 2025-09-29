@@ -9,9 +9,18 @@ app = FastAPI(
     description="Description of project"
 )
 
+
 @app.exception_handler(RequestValidationError)
-async def schema_exception_handler(request: Request, exc: RequestValidationError):
-    return JSONResponse(str(exc), status_code=400)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    if request.method in ("POST", "PUT", "PATCH"):
+        return JSONResponse(
+            status_code=400,
+            content={"detail": [str(exc.body)]},
+        )
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
 
 api_version_prefix = "/api/v1"
 
