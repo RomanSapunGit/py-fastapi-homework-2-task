@@ -158,20 +158,23 @@ async def update_film(movie_id: int, movie: MoviePatchSchema, db: AsyncSession =
     if not db_movie:
         raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
 
-    db_movie.name = movie.name or db_movie.name
-    db_movie.date = movie.date or db_movie.date
-    db_movie.score = movie.score or db_movie.score
-    db_movie.overview = movie.overview or db_movie.overview
-    db_movie.status = movie.status or db_movie.status
-    db_movie.budget = movie.budget or db_movie.budget
-    db_movie.revenue = movie.revenue or db_movie.revenue
+    db_movie.name = movie.name if movie.name is not None else db_movie.name
+    db_movie.date = movie.date if movie.date is not None else db_movie.date
+    db_movie.score = movie.score if movie.score is not None else db_movie.score
+    db_movie.overview = movie.overview if movie.overview is not None else db_movie.overview
+    db_movie.status = movie.status if movie.status is not None else db_movie.status
+    db_movie.budget = movie.budget if movie.budget is not None else db_movie.budget
+    db_movie.revenue = movie.revenue if movie.revenue is not None else db_movie.revenue
 
     await db.commit()
     await db.refresh(db_movie)
     return {"detail": "Movie updated successfully."}
 
 
-async def attach_entities(entities, model: Type[Base], db: AsyncSession = Depends(get_db)):
+async def attach_entities(entities, model: Type[Base], db: AsyncSession):
+    if not entities:
+        return []
+
     existing_entities = await db.execute(
         select(model).where(model.name.in_(entities))
     )
@@ -185,4 +188,5 @@ async def attach_entities(entities, model: Type[Base], db: AsyncSession = Depend
             entity_instance = entity_dict[entity_name]
         db.add(entity_instance)
         result.append(entity_instance)
+    await db.flush(result)
     return result

@@ -2,6 +2,8 @@
 import datetime
 from typing import Optional
 
+from fastapi.exceptions import RequestValidationError
+
 from database.models import MovieStatusEnum
 from pydantic import BaseModel, Field, field_validator
 from schemas.actors import ActorResponseSchema
@@ -81,7 +83,7 @@ class MoviePatchSchema(BaseModel):
     @field_validator("score")
     @classmethod
     def validate_score(cls, value: float) -> float:
-        if 0 > value > 100:
+        if not 0 <= value <= 100:
             raise ValueError("score must be within range 0 - 100")
         return value
 
