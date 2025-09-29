@@ -83,6 +83,8 @@ class MoviePatchSchema(BaseModel):
     @field_validator("score")
     @classmethod
     def validate_score(cls, value: float) -> float:
+        if value is None:
+            return value
         if not 0 <= value <= 100:
             raise ValueError("score must be within range 0 - 100")
         return value
@@ -90,6 +92,8 @@ class MoviePatchSchema(BaseModel):
     @field_validator("budget")
     @classmethod
     def validate_budget(cls, value: float) -> float:
+        if value is None:
+            return value
         if value < 0:
             raise ValueError("budget must be more than 0")
         return value
@@ -97,6 +101,8 @@ class MoviePatchSchema(BaseModel):
     @field_validator("revenue")
     @classmethod
     def validate_revenue(cls, value: float) -> float:
+        if value is None:
+            return value
         if value < 0:
             raise ValueError("revenue must be more than 0")
         return value
