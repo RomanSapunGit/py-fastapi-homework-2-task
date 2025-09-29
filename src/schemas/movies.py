@@ -2,14 +2,12 @@
 import datetime
 from typing import Optional
 
-from fastapi.exceptions import RequestValidationError
-
-from database.models import MovieStatusEnum
+from src.database.models import MovieStatusEnum
 from pydantic import BaseModel, Field, field_validator
-from schemas.actors import ActorResponseSchema
-from schemas.countries import CountryResponseSchema
-from schemas.genres import GenreResponseSchema
-from schemas.languages import LanguageResponseSchema
+from src.schemas.actors import ActorResponseSchema
+from src.schemas.countries import CountryResponseSchema
+from src.schemas.genres import GenreResponseSchema
+from src.schemas.languages import LanguageResponseSchema
 
 
 class MovieDetailSchema(BaseModel):

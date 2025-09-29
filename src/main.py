@@ -15,7 +15,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     if request.method in ("POST", "PUT", "PATCH"):
         return JSONResponse(
             status_code=400,
-            content={"detail": [str(exc.body)]},
+            content={"detail": "Invalid input data."},
         )
     return JSONResponse(
         status_code=422,
